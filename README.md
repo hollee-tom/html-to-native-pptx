@@ -66,56 +66,37 @@ Code layout: `pages.py` (loading), `assets/measure.js` (the in-browser measurer)
 `fontfiles.py` and `fonts.py` (font discovery and embedding), `writer/` (one module each for
 text, shapes, tables, charts, pictures, plus colour and units), `convert.py` and `cli.py`.
 
-### Why it is built this way
+### What it gets right that others often don't
 
-- **Opacity is folded into colour alpha.** PowerPoint has no group opacity, so an element's
-  `opacity`, and its ancestors', is multiplied into every fill, line and text colour as alpha.
-- **A border on only some sides is drawn as strips.** A card with a rule above it used to export
-  with that colour as an outline around the whole box. A border alike on every side is an
-  outline; otherwise each bordered side is a thin filled strip behind the text, drawn over the
-  box's fill.
-- **See-through colours stay see-through.** `rgba(35,31,32,.08)` behind dark text is kept as an
-  alpha colour; measured as solid, the box came out the colour of its text.
-- **Boxless wrappers are not skipped.** A wrapper with zero height whose children are all
-  positioned paints nothing, but its children are still measured.
-- **Inline backgrounds are run highlights.** A chip or marked word keeps its paragraph whole,
-  and status chips in table cells keep their fill.
-- **Inline margins, borders and padding become spaced no-break spaces,** so `01` and `Agenda`
-  do not run together. Spaces collapse across runs as the browser collapses them.
-- **Shapes carry no theme style.** python-pptx gives every shape a style pointing at a theme
-  shadow; a viewer that draws it darkens a see-through overlay on a photo by about 20 grey
-  levels, so the style is removed.
-- **Tables carry no default grid.** A cell writes only the sides the page borders; every bare
-  side is an explicit no line, and the table uses PowerPoint's "No Style, No Grid" style.
-- **Spans are capped.** A `colspan` of 1000 would be a thousand empty columns; spans stop at the
-  widest row's cells and PowerPoint's 75-column limit.
-- **A chart without rows draws no chart**, as the page does; an axis whose minimum is
-  not below its maximum drops both bounds, which PowerPoint would repair away.
+- **See-through colours.** A faint tint behind text stays a faint tint, and an element's
+  `opacity` carries through, because PowerPoint has no group opacity of its own.
+- **Borders on some sides.** A rule above a card stays a rule. It isn't drawn as a box around
+  the whole card.
+- **Badges and highlighted words** keep their background, including in table cells, and the
+  paragraph stays one editable paragraph.
+- **Spacing between inline pieces.** "01" and "Agenda" set apart with margin stay apart.
+- **Content in empty-looking wrappers.** A wrapper with no height of its own, whose children are
+  positioned freely, still has its children exported.
+- **No surprise styling from PowerPoint.** Shapes don't pick up the theme's shadow, and tables
+  don't pick up PowerPoint's default grid lines.
+- **Odd input doesn't break the file.** A chart with no rows is skipped, and an absurd `colspan`
+  is capped.
 
 ## Fonts
 
-By default the fonts your page loaded are embedded in the `.pptx`, so it opens in the right
-typeface on a machine that lacks them (`--no-embed-fonts` turns this off).
+By default, the fonts your page uses are embedded in the `.pptx`. The slides then look right
+on a computer that doesn't have those fonts installed. Turn this off with `--no-embed-fonts`.
 
-- **No font map.** Font bytes come from what the browser fetched: every font response is kept,
-  so a font service, a CDN, a `file://` path or a `data:` URL all work as the page uses them.
-- **Runs are matched to the face the browser drew.** CSS font matching picks it (same style,
-  then nearest weight, lighter first up to 500 and heavier above; where several files share a
-  family and weight, as a font service's per-script subsets do, the one holding the run's
-  characters). Each run is then named by the family *inside* that file, which is what
-  PowerPoint matches and differs from the CSS family for most weights ("Fraunces" at 300 is a
-  family called "Fraunces Light").
-- **Variable fonts are cut per weight.** PowerPoint and most other viewers draw a variable file
-  at its default weight, which for many fonts is the heaviest, making every run extra bold. So
-  each weight a run uses is cut out as a fixed font and named as PowerPoint names weights
-  ("Inter" for 400 and 700, "Inter Light" for 300).
-- **Licences are respected.** A face whose OS/2 `fsType` forbids embedding is named, not carried.
-- **Format.** PowerPoint stores embedded fonts as uncompressed Embedded OpenType (`.fntdata`);
-  PostScript (CFF) outlines, as most `.otf` files have, are converted to TrueType first. A
-  family name holds four slots (regular, bold, italic, bold italic), so a name with more faces
-  than that keeps the first.
-- **Not verified in PowerPoint.** The files open in LibreOffice and python-pptx; embedded-font
-  rendering in desktop PowerPoint, Keynote and Google Slides has not been tested.
+- **It uses the fonts your page loaded**, wherever they came from: a font service such as
+  Google Fonts, a CDN, or local files. There's nothing to configure.
+- **Each piece of text gets the exact font file the browser used**, named the way PowerPoint
+  expects. For example, a 300 weight becomes "Inter Light", so PowerPoint finds it.
+- **Variable fonts work.** Many viewers draw a variable font at its default weight, which is
+  often the boldest. So each weight your slides use is saved as its own fixed font.
+- **Font licences are respected.** A font that doesn't allow embedding is named in the file but
+  not included.
+- **Not yet checked in PowerPoint.** Embedded fonts have been verified in LibreOffice. PowerPoint,
+  Keynote and Google Slides haven't been tested yet.
 
 ## Supported CSS and markup
 
@@ -158,96 +139,73 @@ and elements with `::before`/`::after` content.
 
 ## Benchmark
 
-Two benchmarks, kept separate. Both use the same scorers: letters and digits kept, where text
-sits, how many native objects of each kind the file holds, a per-feature check (does each CSS
-feature have a PowerPoint equivalent?), and a visual check, in which LibreOffice draws the PPTX
-and each page is compared with Chromium's screenshot of the HTML slide as mean absolute grey
-difference at 640x360 (lower is better). **LibreOffice stands in for PowerPoint.** It differs in
-line breaking, font fallback, variable fonts and highlight rendering, so visual numbers are
-indicative only. One run each, no confidence intervals; treat MAE differences below about 0.5 as
-noise.
+We compared html-to-native-pptx with four other open-source HTML-to-PowerPoint converters on 193
+real slides, then on a public test deck anyone can rerun.
 
-### Synthetic public corpus (reproducible)
+**What it shows**
 
-`corpus/deck.html` is 21 slides of original HTML (no third-party or client content) recreating
-the difficulties found in real decks: inline chips and badges (also inside table cells),
-opacity on text and shapes, rotated cards, letter-spaced labels and inline margins, partial
-borders and tables with borders on some sides, gradient-clipped headings and
-`::before`/`::after`, zero-height wrappers with positioned children, a full-slide photo with a
-translucent overlay, native charts, and fonts: Inter (variable), DM Serif Display and IBM Plex
-Mono (static), all SIL OFL, with their licences in `corpus/fonts/`. Pictures are drawn by
-`corpus/make_images.py`.
+- **Closest to the original.** Its slides look the most like the HTML of the five tools.
+- **No lost text.** It kept every word. The other tools lost or ran together 60 to 408 words.
+- **Most stays editable.** Tables stay real PowerPoint tables, borders stay lines, and charts stay
+  charts. Other tools turn some of these into pictures or plain text.
+- **Your fonts come with the file.** It embeds the deck's own fonts, so slides look right on a
+  computer that doesn't have them installed.
 
-Rerun it (Docker; Chromium, LibreOffice and poppler come from the image):
+**How much to trust it**
+
+- The slides were checked by opening them in LibreOffice, not PowerPoint. PowerPoint may wrap a
+  line or space a letter slightly differently. We haven't yet tested opening the files in
+  PowerPoint, Keynote or Google Slides.
+- The 193 real slides all came from one product's decks. HTML written another way may use CSS
+  these decks don't, so check your own slides.
+- Each tool was run once. Small differences, about half a point on the visual score, are noise.
+
+### On 193 real slides
+
+These are 8 private decks, so only the totals are published.
+
+| | **html-to-native-pptx** | dom-to-pptx | SlideSmith | html-to-pptx | html-to-editable-pptx |
+|---|---|---|---|---|---|
+| Visual difference from the HTML (lower is better) | **5.2** | 6.2 | 7.3 | 7.4 | 8.2 |
+| Slides that look clearly different | **3** | **3** | 10 | 4 | 12 |
+| Words lost or run together (of 24,508) | **0** | 90 | 90 | 146 | 558 |
+| Tables kept as tables (of 116) | **116** | **116** | **116** | 0 | 0 |
+| Parts turned into pictures (fewer is more editable) | **184** | 359 | 359 | **184** | **184** |
+| Letter-spacing kept | **100%** | **100%** | **100%** | 97% | 97% |
+| See-through colours kept | **99%** | **99%** | **99%** | 0% | 0% |
+| Rotated elements kept | 96% | **100%** | 96% | **100%** | 91% |
+
+The visual difference is the average grey-level difference per pixel between the HTML and the
+PowerPoint slide, on a 0 to 255 scale. A slide counts as clearly different above 15.
+
+### On the public test deck
+
+`corpus/deck.html` is 21 slides of original HTML, built to recreate the hard cases found in real
+decks: badges and highlights, see-through colours, rotation, letter-spacing, one-sided borders,
+gradient headings, photo backgrounds with overlays, charts and web fonts. Its fonts are openly
+licensed and their licences are in `corpus/fonts/`.
+
+| | **html-to-native-pptx** | dom-to-pptx |
+|---|---|---|
+| Visual difference from the HTML (lower is better) | **4.6** | 9.3 |
+| Letters lost (of 1,998) | **0** | **0** |
+| Charts kept as charts (of 5) | **5** | 0 |
+| One-sided borders kept as lines (of 8) | **8** | 0 |
+| Fonts embedded | **Yes** | No |
+| Rotated elements kept (of 5) | 3 | **5** |
+
+dom-to-pptx also dropped the full-slide background photo on one slide. Our two rotation misses
+are badges rotated inside a line of text, listed under Known gaps.
+
+To rerun it yourself (needs Docker):
 
 ```sh
-benchmark/run.sh                          # html-to-native-pptx only
-benchmark/run.sh --tools html-to-native-pptx,dom-to-pptx   # also compare dom-to-pptx
+benchmark/run.sh                                            # html-to-native-pptx only
+benchmark/run.sh --tools html-to-native-pptx,dom-to-pptx    # with dom-to-pptx too
 ```
 
-`dom-to-pptx` is third-party code, so `npm install dom-to-pptx` and the run happen only inside
-the container. Results go to `benchmark/out/results.{json,md}`.
-
-Results on 2026-11-23 (LibreOffice 24.2, Chromium from Playwright 1.65, 21 slides, 1280x720):
-
-| | html-to-native-pptx | dom-to-pptx |
-|---|---|---|
-| Slides written / LibreOffice pages | 21 / 21 | 21 / 21 |
-| Letters and digits missing / extra (of 1998) | 0 / 0 | 0 / 0 |
-| Text blocks outside their box | 4 of 123 | 2 of 123 |
-| Native text boxes / shapes | 116 / 31 | 131 / 47 |
-| Native tables / charts | 2 / 5 | 2 / 0 |
-| Pictures | 7 | 15 |
-| Embedded font parts | 10 | 0 |
-| Pixel MAE mean (lower is better) | 4.56 | 9.29 |
-| Slides with MAE over 15 | 1 | 2 |
-| Feature: charts native | 5/5 | 0/5 |
-| Feature: chips | 6/6 | 6/6 |
-| Feature: letter-spacing | 32/32 | 32/32 |
-| Feature: opacity | 3/3 | 3/3 |
-| Feature: partial borders as strips | 8/8 | 0/8 |
-| Feature: rotation | 3/5 | 5/5 |
-| Feature: tables native | 2/2 | 2/2 |
-| Feature: `<img>` as picture | 1/1 | 0/1 |
-
-Reading it:
-
-- html-to-native-pptx's slides above MAE 8 are chart slides 10 to 12 (the page's own SVG drawing against a
-  native PowerPoint chart, which look different on purpose) and slide 13 (variable-weight text).
-- dom-to-pptx lost the full-slide CSS background photo on slide 8 (MAE 116) and draws partial
-  borders as pictures or not at all. It was run with default options.
-- html-to-native-pptx's two rotation misses are the two inline rotated badges listed under Known gaps.
-- Conversion time is not comparable: html-to-native-pptx's includes cutting and embedding fonts.
-
-### Private corpus (numbers only)
-
-Before this package existed, the engine it was extracted from was benchmarked on **a private
-corpus of 8 real generated decks (193 slides, 1280x720)**. Those decks are not published and
-nothing from them is in this repository; only these aggregates are. Same scorers as above, all
-tools re-scored with the same scripts; fonts were installed for LibreOffice for every tool alike.
-
-| | engine before the fixes | **html-to-native-pptx engine** | dom-to-pptx | html_to_pptx | slidesmith | editable-pptx |
-|---|---|---|---|---|---|---|
-| Slides exported | 193 | 193 | 193 | 193 | 193 | 193 |
-| Words missing / extra (of 24508) | 60 / 30 | **0 / 0** | 60 / 30 | 104 / 42 | 60 / 30 | 408 / 150 |
-| Native text boxes | 1853 | 1853 | 1859 | 6310 | 1851 | 1860 |
-| Native tables | 116 | 116 | 116 | 0 | 116 | 0 |
-| Pictures | 184 | 184 | 359 | 184 | 359 | 184 |
-| Embedded font parts | 0 | 21 | 27 | 0 | 24 | 12 |
-| Pixel MAE mean | 6.33 | **5.23** | 6.24 | 7.44 | 7.34 | 8.20 |
-| Slides with MAE over 15 | 8 | 3 | 3 | 4 | 10 | 12 |
-| Letter-spacing kept | 0% | 100% | 100% | 97% | 100% | 97% |
-| Opacity kept | 0% | 99% | 99% | 0% | 99% | 0% |
-| Inline chips kept (incl. highlights) | 83% | 100% | 100% | 81% | 80% | 96% |
-| Partial borders as strips | 100% | 100% | 23% | 100% | 23% | 100% |
-| Rotation kept | 67% | 96% | 100% | 100% | 96% | 91% |
-
-Caveats: eight decks from one product and one run each; no real PowerPoint, Keynote or Google
-Slides rendering; the "engine before the fixes" column is how the same code performed before
-the round of fixes now in this package; the fonts of one deck loaded over the network were
-unavailable to the offline html-to-native-pptx run, inflating its placement error on that deck; and
-LibreOffice drew one embedded variable font heavier than the HTML, which hurts two decks and
-may not occur in PowerPoint. Opening and repair behaviour in real PowerPoint is untested.
+Results go to `benchmark/out/results.md`. dom-to-pptx is installed and run only inside the
+container.
 
 ## Development
 
