@@ -377,3 +377,16 @@ def test_given_a_tint_and_a_ruled_table_when_written_then_no_theme_shadow_or_gri
         sides.find(f"{namespace}{tag}/{namespace}noFill") is not None
         for tag in ("lnL", "lnR", "lnT")
     )
+
+
+def test_given_a_deck_with_pictures_and_fonts_when_sent_as_json_then_it_reads_back_equal():
+    from html_to_native_pptx.model import DeckFont, MeasuredDeck, MeasuredSlide
+
+    deck = MeasuredDeck(
+        width=1280,
+        height=720,
+        slides=(MeasuredSlide(picture=b"\x89PNG\xff\x00binary"),),
+        fonts=(DeckFont(family="Inter", data=b"\x00\x01\x00\x00\xff"),),
+    )
+
+    assert MeasuredDeck.model_validate_json(deck.model_dump_json()) == deck

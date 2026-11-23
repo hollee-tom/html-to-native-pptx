@@ -40,9 +40,15 @@ Legend = Literal["top", "bottom", "right", "none"]
 
 
 class Model(BaseModel):
-    """Base of every measured type: immutable, and tolerant of keys a newer measurer adds."""
+    """Base of every measured type: immutable, and tolerant of keys a newer measurer adds.
 
-    model_config = ConfigDict(frozen=True, extra="ignore")
+    Bytes (pictures, font files) travel as base64 in JSON, so a measured deck can be written by
+    one process and read by another: `MeasuredDeck.model_validate_json(deck.model_dump_json())`.
+    """
+
+    model_config = ConfigDict(
+        frozen=True, extra="ignore", ser_json_bytes="base64", val_json_bytes="base64"
+    )
 
 
 class Box(Model):
