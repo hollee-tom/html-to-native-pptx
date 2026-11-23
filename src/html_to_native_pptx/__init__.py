@@ -14,7 +14,7 @@ from html_to_native_pptx.measurer import (
 from html_to_native_pptx.model import DeckFont, MeasuredDeck
 from html_to_native_pptx.writer import deck_pptx
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __all__ = [
     "BACKGROUND",
     "MARK",

@@ -1,6 +1,6 @@
 [project]
 name = "html-to-native-pptx"
-version = "0.1.0"
+version = "0.1.1"
 description = "High-fidelity HTML to native, editable PowerPoint."
 readme = "README.md"
 requires-python = ">=3.11"
