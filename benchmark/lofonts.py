@@ -14,7 +14,7 @@ from pathlib import Path
 from fontTools.ttLib import TTFont
 from fontTools.varLib import instancer
 
-from nativedeck.fonts import WEIGHT_NAMES, renamed
+from html_to_native_pptx.fonts import WEIGHT_NAMES, renamed
 
 WEIGHTS = (300, 400, 500, 600, 700, 800)
 

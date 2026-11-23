@@ -12,7 +12,7 @@ from fontTools.pens.ttGlyphPen import TTGlyphPen
 from fontTools.ttLib import TTFont
 from pptx import Presentation
 
-from nativedeck.model import (
+from html_to_native_pptx.model import (
     Box,
     DeckFont,
     MeasuredDeck,
@@ -21,7 +21,7 @@ from nativedeck.model import (
     Run,
     TextItem,
 )
-from nativedeck.writer import deck_pptx
+from html_to_native_pptx.writer import deck_pptx
 
 P = "{http://schemas.openxmlformats.org/presentationml/2006/main}"
 R = "{http://schemas.openxmlformats.org/officeDocument/2006/relationships}"

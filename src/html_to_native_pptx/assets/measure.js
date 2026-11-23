@@ -1,10 +1,10 @@
 /**
  * Runs inside the page, once, and returns the measurements of every slide as JSON.
  * Called as `page.evaluate(script, slideSelector)`; the selector names one element per slide.
- * The result is `{ slides, pictures, fonts }`; see nativedeck/model.py for what each part means.
+ * The result is `{ slides, pictures, fonts }`; see html_to_native_pptx/model.py for what each part means.
  */
 (selector) => {
-  const MARK = "data-nativedeck";
+  const MARK = "data-html-to-native-pptx";
   const probe = document.createElement("i");
   document.body.appendChild(probe);
   const hex = (value, clear = false) => {

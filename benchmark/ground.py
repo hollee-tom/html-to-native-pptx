@@ -88,7 +88,9 @@ def record(html: Path, out: Path, selector: str, width: int, height: int) -> tup
     """
     (out / "shots").mkdir(parents=True, exist_ok=True)
     with sync_playwright() as playwright:
-        browser = playwright.chromium.launch(executable_path=os.environ.get("NATIVEDECK_CHROMIUM"))
+        browser = playwright.chromium.launch(
+            executable_path=os.environ.get("HTML_TO_NATIVE_PPTX_CHROMIUM")
+        )
         page = browser.new_page(viewport={"width": width, "height": height})
         page.goto(html.resolve().as_uri(), wait_until="load")
         page.evaluate("document.fonts.ready.then(() => true)")

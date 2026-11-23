@@ -13,9 +13,9 @@ import pytest
 from pptx import Presentation
 from pptx.util import Emu
 
-from nativedeck import NativedeckError, convert, measure
-from nativedeck.cli import main
-from nativedeck.model import ChartItem, ShapeItem, TableItem, TextItem
+from html_to_native_pptx import ConversionError, convert, measure
+from html_to_native_pptx.cli import main
+from html_to_native_pptx.model import ChartItem, ShapeItem, TableItem, TextItem
 
 SLIDE = "<style>section{width:1280px;height:720px;position:relative;margin:0}body{margin:0}</style>"
 CORPUS = Path(__file__).resolve().parent.parent / "corpus"
@@ -153,7 +153,7 @@ def test_given_the_corpus_when_converted_then_every_slide_is_written_at_the_canv
 def test_given_a_selector_that_matches_nothing_when_converted_then_it_says_so(
     tmp_path: Path,
 ) -> None:
-    with pytest.raises(NativedeckError, match="no element matches"):
+    with pytest.raises(ConversionError, match="no element matches"):
         convert(SLIDE + "<section></section>", tmp_path / "a.pptx", slide_selector=".missing")
 
 

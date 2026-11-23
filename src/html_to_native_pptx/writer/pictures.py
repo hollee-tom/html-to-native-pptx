@@ -4,8 +4,8 @@ import io
 
 from pptx.shapes.shapetree import SlideShapes
 
-from nativedeck.model import PictureItem
-from nativedeck.writer.units import place
+from html_to_native_pptx.model import PictureItem
+from html_to_native_pptx.writer.units import place
 
 
 def add_picture(shapes: SlideShapes, item: PictureItem) -> None:

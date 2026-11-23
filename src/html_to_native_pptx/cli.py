@@ -1,4 +1,4 @@
-"""The `nativedeck` command: `nativedeck deck.html -o deck.pptx`."""
+"""The `html-to-native-pptx` command: `html-to-native-pptx deck.html -o deck.pptx`."""
 
 from __future__ import annotations
 
@@ -7,15 +7,15 @@ import logging
 import sys
 from pathlib import Path
 
-from nativedeck import __version__
-from nativedeck.convert import convert
-from nativedeck.errors import NativedeckError
+from html_to_native_pptx import __version__
+from html_to_native_pptx.convert import convert
+from html_to_native_pptx.errors import ConversionError
 
 
 def parser() -> argparse.ArgumentParser:
     """The command's arguments."""
     found = argparse.ArgumentParser(
-        prog="nativedeck", description="High-fidelity HTML to native, editable PowerPoint."
+        prog="html-to-native-pptx", description="High-fidelity HTML to native, editable PowerPoint."
     )
     found.add_argument("html", type=Path, help="the HTML file holding the slides")
     found.add_argument(
@@ -43,14 +43,14 @@ def parser() -> argparse.ArgumentParser:
     found.add_argument(
         "--timeout", type=int, default=60, help="seconds to wait on the page (default: 60)"
     )
-    found.add_argument("--version", action="version", version=f"nativedeck {__version__}")
+    found.add_argument("--version", action="version", version=f"html-to-native-pptx {__version__}")
     return found
 
 
 def main(argv: list[str] | None = None) -> int:
     """Run the command; returns the exit status."""
     args = parser().parse_args(argv)
-    logging.basicConfig(level=logging.WARNING, format="nativedeck: %(message)s")
+    logging.basicConfig(level=logging.WARNING, format="html-to-native-pptx: %(message)s")
     out = args.out or args.html.with_suffix(".pptx")
     try:
         convert(
@@ -64,8 +64,8 @@ def main(argv: list[str] | None = None) -> int:
             timeout_ms=args.timeout * 1000,
             executable_path=args.chromium,
         )
-    except NativedeckError as error:
-        print(f"nativedeck: {error}", file=sys.stderr)
+    except ConversionError as error:
+        print(f"html-to-native-pptx: {error}", file=sys.stderr)
         return 1
     print(out)
     return 0

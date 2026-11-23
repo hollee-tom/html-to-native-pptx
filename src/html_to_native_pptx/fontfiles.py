@@ -19,7 +19,7 @@ from urllib.request import url2pathname
 
 from playwright.sync_api import Response
 
-from nativedeck.model import DeckFont
+from html_to_native_pptx.model import DeckFont
 
 
 class FontResponses:

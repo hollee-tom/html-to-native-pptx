@@ -1,4 +1,4 @@
-// The page's own chart drawing. nativedeck never reads this: it reads the data table inside
+// The page's own chart drawing. html-to-native-pptx never reads this: it reads the data table inside
 // each figure[data-chart] and writes a native PowerPoint chart. This script only makes the
 // HTML show something for the same numbers, as an author's charting code would.
 for (const fig of document.querySelectorAll("figure[data-chart]")) {

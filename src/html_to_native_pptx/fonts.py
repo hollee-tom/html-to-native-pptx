@@ -32,7 +32,7 @@ from fontTools.ttLib import TTFont, TTLibError, newTable
 from fontTools.varLib import instancer
 from lxml import etree
 
-from nativedeck.model import DeckFont
+from html_to_native_pptx.model import DeckFont
 
 logger = logging.getLogger(__name__)
 

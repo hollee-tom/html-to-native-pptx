@@ -10,11 +10,11 @@ from pptx.oxml.ns import qn
 from pptx.shapes.shapetree import SlideShapes
 from pptx.table import _Cell
 
-from nativedeck.fonts import Typefaces
-from nativedeck.model import Border, Cell, Insets, TableItem
-from nativedeck.writer.colour import alpha_of, paint
-from nativedeck.writer.text import ANCHORS, write_paragraphs
-from nativedeck.writer.units import emu, place
+from html_to_native_pptx.fonts import Typefaces
+from html_to_native_pptx.model import Border, Cell, Insets, TableItem
+from html_to_native_pptx.writer.colour import alpha_of, paint
+from html_to_native_pptx.writer.text import ANCHORS, write_paragraphs
+from html_to_native_pptx.writer.units import emu, place
 
 NO_GRID = "{2D5ABB26-0587-4C30-8999-92F81FD0307C}"
 """PowerPoint's built-in "No Style, No Grid" table style."""

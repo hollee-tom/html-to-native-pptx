@@ -1,6 +1,6 @@
 """Run the benchmark: convert the corpus with each tool, score every file, write the results.
 
-    python benchmark/run.py --tools nativedeck,dom-to-pptx
+    python benchmark/run.py --tools html-to-native-pptx,dom-to-pptx
 
 Everything here needs Chromium, LibreOffice and poppler; `benchmark/run.sh` runs it in the
 project's Docker image so anyone gets the same renderer.
@@ -25,10 +25,10 @@ import score  # noqa: E402
 import visual  # noqa: E402
 
 TOOLS = {
-    "nativedeck": lambda html, out, sel, w, h: [
+    "html-to-native-pptx": lambda html, out, sel, w, h: [
         sys.executable,
         "-m",
-        "nativedeck",
+        "html-to-native-pptx",
         str(html),
         "-o",
         str(out),
@@ -137,7 +137,7 @@ def main() -> None:
     parser.add_argument("--selector", default="section")
     parser.add_argument("--width", type=int, default=1280)
     parser.add_argument("--height", type=int, default=720)
-    parser.add_argument("--tools", default="nativedeck")
+    parser.add_argument("--tools", default="html-to-native-pptx")
     args = parser.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
     lofonts.install(args.fonts, Path.home() / ".fonts")

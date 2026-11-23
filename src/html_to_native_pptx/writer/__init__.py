@@ -7,7 +7,7 @@ numbers, and plain shapes become shapes. Only what PowerPoint cannot represent, 
 drawing or a gradient, arrives as a picture of just that part.
 
 It uses python-pptx, which writes the file format directly, so no browser or Office is needed
-here: the drawing is done before, in `nativedeck.browser`.
+here: the drawing is done before, in `html_to_native_pptx.browser`.
 """
 
 import io
@@ -15,8 +15,8 @@ import io
 from pptx import Presentation
 from pptx.slide import Slide
 
-from nativedeck.fonts import Typefaces
-from nativedeck.model import (
+from html_to_native_pptx.fonts import Typefaces
+from html_to_native_pptx.model import (
     ChartItem,
     MeasuredDeck,
     MeasuredSlide,
@@ -24,13 +24,13 @@ from nativedeck.model import (
     TableItem,
     TextItem,
 )
-from nativedeck.writer.charts import add_chart
-from nativedeck.writer.colour import paint
-from nativedeck.writer.pictures import add_picture
-from nativedeck.writer.shapes import add_shape
-from nativedeck.writer.tables import add_table
-from nativedeck.writer.text import add_text
-from nativedeck.writer.units import emu
+from html_to_native_pptx.writer.charts import add_chart
+from html_to_native_pptx.writer.colour import paint
+from html_to_native_pptx.writer.pictures import add_picture
+from html_to_native_pptx.writer.shapes import add_shape
+from html_to_native_pptx.writer.tables import add_table
+from html_to_native_pptx.writer.text import add_text
+from html_to_native_pptx.writer.units import emu
 
 BLANK_LAYOUT = 6
 """Index of python-pptx's blank layout, so no placeholder boxes appear on a slide."""

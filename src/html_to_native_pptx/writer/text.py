@@ -14,11 +14,11 @@ from pptx.shapes.shapetree import SlideShapes
 from pptx.text.text import TextFrame, _Run
 from pptx.util import Pt
 
-from nativedeck.fonts import Typefaces
-from nativedeck.model import Insets, Paragraph, Run, TextItem
-from nativedeck.writer.colour import alpha_of, paint
-from nativedeck.writer.shapes import outlined
-from nativedeck.writer.units import POINTS_PER_PIXEL, emu, place
+from html_to_native_pptx.fonts import Typefaces
+from html_to_native_pptx.model import Insets, Paragraph, Run, TextItem
+from html_to_native_pptx.writer.colour import alpha_of, paint
+from html_to_native_pptx.writer.shapes import outlined
+from html_to_native_pptx.writer.units import POINTS_PER_PIXEL, emu, place
 
 
 def add_text(shapes: SlideShapes, item: TextItem, faces: Typefaces) -> None:

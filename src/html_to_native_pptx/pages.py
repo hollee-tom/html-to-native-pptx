@@ -40,7 +40,12 @@ def source_url(source: str | Path, base_dir: Path | None) -> Iterator[str]:
         return
     folder = base_dir.resolve() if base_dir is not None else None
     with tempfile.NamedTemporaryFile(
-        "w", suffix=".html", prefix=".nativedeck-", dir=folder, delete=False, encoding="utf-8"
+        "w",
+        suffix=".html",
+        prefix=".html-to-native-pptx-",
+        dir=folder,
+        delete=False,
+        encoding="utf-8",
     ) as written:
         written.write(source)
     path = Path(written.name)

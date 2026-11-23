@@ -16,9 +16,9 @@ from pptx.oxml.ns import qn
 from pptx.shapes.shapetree import SlideShapes
 from pptx.util import Pt
 
-from nativedeck.model import ChartItem
-from nativedeck.writer.colour import paint
-from nativedeck.writer.units import POINTS_PER_PIXEL, emu, place
+from html_to_native_pptx.model import ChartItem
+from html_to_native_pptx.writer.colour import paint
+from html_to_native_pptx.writer.units import POINTS_PER_PIXEL, emu, place
 
 DEFAULT_COLOURS = ("#4B3BFF", "#FF7A59", "#2BB673", "#F2B705", "#8E44AD", "#16A3B8")
 

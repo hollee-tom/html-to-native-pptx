@@ -1,8 +1,8 @@
 # Native charts: the `figure[data-chart]` format
 
-nativedeck turns a figure into a real PowerPoint chart (editable data, colours, legend) when it
+html-to-native-pptx turns a figure into a real PowerPoint chart (editable data, colours, legend) when it
 follows this opt-in format. Charts are not detected from SVG, canvas or charting libraries: the
-page says what the chart is, in markup, and nativedeck reads those numbers.
+page says what the chart is, in markup, and html-to-native-pptx reads those numbers.
 
 ```html
 <figure data-chart="column" data-legend="bottom" data-labels="on" data-format="currency:USD"

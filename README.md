@@ -1,8 +1,8 @@
-# nativedeck
+# html-to-native-pptx
 
 **High-fidelity HTML to native, editable PowerPoint.**
 
-nativedeck opens a deck of HTML slides in Chromium, measures what the browser actually drew, and
+html-to-native-pptx opens a deck of HTML slides in Chromium, measures what the browser actually drew, and
 writes a `.pptx` whose contents are real PowerPoint objects:
 
 - **Text** stays text: text boxes with runs, fonts, sizes, colours, letter-spacing, bullets,
@@ -21,14 +21,14 @@ It is not a slide-screenshot exporter: a deck made of one picture per slide is n
 ## Quick start
 
 ```sh
-pip install nativedeck
+pip install html-to-native-pptx
 playwright install chromium
-nativedeck deck.html -o deck.pptx
+html-to-native-pptx deck.html -o deck.pptx
 ```
 
 ```python
 from pathlib import Path
-from nativedeck import convert
+from html_to_native_pptx import convert
 
 convert(Path("deck.html"), Path("deck.pptx"), slide_selector="section", width=1280, height=720)
 ```
@@ -37,17 +37,17 @@ convert(Path("deck.html"), Path("deck.pptx"), slide_selector="section", width=12
 resolve). Every element matching `slide_selector` is one slide of `width` x `height` CSS pixels.
 
 ```text
-nativedeck deck.html -o deck.pptx
+html-to-native-pptx deck.html -o deck.pptx
     -s, --slide-selector SELECTOR   CSS selector of one slide (default: section)
         --width / --height PX       slide size in CSS pixels (default: 1280x720)
         --no-embed-fonts            name fonts only; do not embed them
         --no-freeze-animations      measure animations as they stand
-        --chromium PATH             a Chromium binary to drive (or set NATIVEDECK_CHROMIUM)
+        --chromium PATH             a Chromium binary to drive (or set HTML_TO_NATIVE_PPTX_CHROMIUM)
         --timeout SECONDS           how long to wait on the page (default: 60)
 ```
 
-`nativedeck.measure(...)` returns the measurements (a pydantic `MeasuredDeck`) without writing a
-file, and `nativedeck.deck_pptx(deck)` writes one from measurements, with no browser needed.
+`html_to_native_pptx.measure(...)` returns the measurements (a pydantic `MeasuredDeck`) without writing a
+file, and `html_to_native_pptx.deck_pptx(deck)` writes one from measurements, with no browser needed.
 
 ## How it works
 
@@ -181,8 +181,8 @@ Mono (static), all SIL OFL, with their licences in `corpus/fonts/`. Pictures are
 Rerun it (Docker; Chromium, LibreOffice and poppler come from the image):
 
 ```sh
-benchmark/run.sh                          # nativedeck only
-benchmark/run.sh --tools nativedeck,dom-to-pptx   # also compare dom-to-pptx
+benchmark/run.sh                          # html-to-native-pptx only
+benchmark/run.sh --tools html-to-native-pptx,dom-to-pptx   # also compare dom-to-pptx
 ```
 
 `dom-to-pptx` is third-party code, so `npm install dom-to-pptx` and the run happen only inside
@@ -190,7 +190,7 @@ the container. Results go to `benchmark/out/results.{json,md}`.
 
 Results on 2026-11-23 (LibreOffice 24.2, Chromium from Playwright 1.65, 21 slides, 1280x720):
 
-| | nativedeck | dom-to-pptx |
+| | html-to-native-pptx | dom-to-pptx |
 |---|---|---|
 | Slides written / LibreOffice pages | 21 / 21 | 21 / 21 |
 | Letters and digits missing / extra (of 1998) | 0 / 0 | 0 / 0 |
@@ -212,12 +212,12 @@ Results on 2026-11-23 (LibreOffice 24.2, Chromium from Playwright 1.65, 21 slide
 
 Reading it:
 
-- nativedeck's slides above MAE 8 are chart slides 10 to 12 (the page's own SVG drawing against a
+- html-to-native-pptx's slides above MAE 8 are chart slides 10 to 12 (the page's own SVG drawing against a
   native PowerPoint chart, which look different on purpose) and slide 13 (variable-weight text).
 - dom-to-pptx lost the full-slide CSS background photo on slide 8 (MAE 116) and draws partial
   borders as pictures or not at all. It was run with default options.
-- nativedeck's two rotation misses are the two inline rotated badges listed under Known gaps.
-- Conversion time is not comparable: nativedeck's includes cutting and embedding fonts.
+- html-to-native-pptx's two rotation misses are the two inline rotated badges listed under Known gaps.
+- Conversion time is not comparable: html-to-native-pptx's includes cutting and embedding fonts.
 
 ### Private corpus (numbers only)
 
@@ -226,7 +226,7 @@ corpus of 8 real generated decks (193 slides, 1280x720)**. Those decks are not p
 nothing from them is in this repository; only these aggregates are. Same scorers as above, all
 tools re-scored with the same scripts; fonts were installed for LibreOffice for every tool alike.
 
-| | engine before the fixes | **nativedeck engine** | dom-to-pptx | html_to_pptx | slidesmith | editable-pptx |
+| | engine before the fixes | **html-to-native-pptx engine** | dom-to-pptx | html_to_pptx | slidesmith | editable-pptx |
 |---|---|---|---|---|---|---|
 | Slides exported | 193 | 193 | 193 | 193 | 193 | 193 |
 | Words missing / extra (of 24508) | 60 / 30 | **0 / 0** | 60 / 30 | 104 / 42 | 60 / 30 | 408 / 150 |
@@ -245,7 +245,7 @@ tools re-scored with the same scripts; fonts were installed for LibreOffice for 
 Caveats: eight decks from one product and one run each; no real PowerPoint, Keynote or Google
 Slides rendering; the "engine before the fixes" column is how the same code performed before
 the round of fixes now in this package; the fonts of one deck loaded over the network were
-unavailable to the offline nativedeck run, inflating its placement error on that deck; and
+unavailable to the offline html-to-native-pptx run, inflating its placement error on that deck; and
 LibreOffice drew one embedded variable font heavier than the HTML, which hurts two decks and
 may not occur in PowerPoint. Opening and repair behaviour in real PowerPoint is untested.
 

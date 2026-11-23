@@ -7,13 +7,13 @@ from pathlib import Path
 
 from playwright.sync_api import sync_playwright
 
-from nativedeck.fontfiles import FontResponses
-from nativedeck.measurer import measure_deck
-from nativedeck.model import MeasuredDeck
-from nativedeck.pages import launch, open_page, source_url
-from nativedeck.writer import deck_pptx
+from html_to_native_pptx.fontfiles import FontResponses
+from html_to_native_pptx.measurer import measure_deck
+from html_to_native_pptx.model import MeasuredDeck
+from html_to_native_pptx.pages import launch, open_page, source_url
+from html_to_native_pptx.writer import deck_pptx
 
-EXECUTABLE_ENV = "NATIVEDECK_CHROMIUM"
+EXECUTABLE_ENV = "HTML_TO_NATIVE_PPTX_CHROMIUM"
 """Names a Chromium binary to use instead of the one `playwright install chromium` fetches."""
 
 
@@ -72,7 +72,7 @@ def convert(
     relative links resolve). Every element matching `slide_selector` is one slide of
     `width` x `height` CSS pixels. With `embed_fonts` the fonts the page loaded are embedded in
     the file. `freeze_animations` jumps animations to their last frame before measuring.
-    `executable_path` (or the `NATIVEDECK_CHROMIUM` variable) names a Chromium to drive.
+    `executable_path` (or the `HTML_TO_NATIVE_PPTX_CHROMIUM` variable) names a Chromium to drive.
     """
     deck = measure(
         html,

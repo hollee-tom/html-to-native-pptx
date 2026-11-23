@@ -31,7 +31,9 @@ EXPORT = """async (options) => {
 def main(html: str, out: str, selector: str, width: int, height: int) -> None:
     """Export `html`'s slides with dom-to-pptx into `out`."""
     with sync_playwright() as playwright:
-        browser = playwright.chromium.launch(executable_path=os.environ.get("NATIVEDECK_CHROMIUM"))
+        browser = playwright.chromium.launch(
+            executable_path=os.environ.get("HTML_TO_NATIVE_PPTX_CHROMIUM")
+        )
         page = browser.new_page(viewport={"width": width, "height": height})
         page.goto(Path(html).resolve().as_uri(), wait_until="load")
         page.evaluate("document.fonts.ready.then(() => true)")

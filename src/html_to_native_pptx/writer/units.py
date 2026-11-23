@@ -2,7 +2,7 @@
 
 from pptx.util import Emu
 
-from nativedeck.model import Box
+from html_to_native_pptx.model import Box
 
 EMU_PER_PIXEL = 9525
 """A CSS pixel is 9525 EMU at 96 dpi."""

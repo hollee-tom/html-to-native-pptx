@@ -10,9 +10,9 @@ from pptx.oxml.ns import qn
 from pptx.shapes.autoshape import Shape
 from pptx.shapes.shapetree import SlideShapes
 
-from nativedeck.model import Box, ShapeItem
-from nativedeck.writer.colour import paint
-from nativedeck.writer.units import emu, place
+from html_to_native_pptx.model import Box, ShapeItem
+from html_to_native_pptx.writer.colour import paint
+from html_to_native_pptx.writer.units import emu, place
 
 
 def add_shape(shapes: SlideShapes, item: ShapeItem) -> None:

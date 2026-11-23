@@ -12,7 +12,7 @@ from pptx.enum.chart import XL_CHART_TYPE
 from pptx.enum.shapes import MSO_SHAPE_TYPE
 from pptx.util import Emu
 
-from nativedeck.model import (
+from html_to_native_pptx.model import (
     Border,
     Box,
     Cell,
@@ -27,7 +27,7 @@ from nativedeck.model import (
     TableItem,
     TextItem,
 )
-from nativedeck.writer import deck_pptx
+from html_to_native_pptx.writer import deck_pptx
 
 PIXEL = base64.b64decode(
     "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
