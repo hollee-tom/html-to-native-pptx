@@ -89,7 +89,7 @@ text, shapes, tables, charts, pictures, plus colour and units), `convert.py` and
   side is an explicit no line, and the table uses PowerPoint's "No Style, No Grid" style.
 - **Spans are capped.** A `colspan` of 1000 would be a thousand empty columns; spans stop at the
   widest row's cells and PowerPoint's 75-column limit.
-- **Slides without a chart's rows draw no chart**, as the page does; an axis whose minimum is
+- **A chart without rows draws no chart**, as the page does; an axis whose minimum is
   not below its maximum drops both bounds, which PowerPoint would repair away.
 
 ## Fonts
@@ -212,8 +212,8 @@ Results on 2026-11-23 (LibreOffice 24.2, Chromium from Playwright 1.65, 21 slide
 
 Reading it:
 
-- nativedeck's three slides above MAE 8 are chart slides 10 to 12 (the page's own SVG drawing
-  against a native PowerPoint chart, which look different on purpose) and slide 13.
+- nativedeck's slides above MAE 8 are chart slides 10 to 12 (the page's own SVG drawing against a
+  native PowerPoint chart, which look different on purpose) and slide 13 (variable-weight text).
 - dom-to-pptx lost the full-slide CSS background photo on slide 8 (MAE 116) and draws partial
   borders as pictures or not at all. It was run with default options.
 - nativedeck's two rotation misses are the two inline rotated badges listed under Known gaps.
