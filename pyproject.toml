@@ -7,7 +7,7 @@ requires-python = ">=3.11"
 license = "MIT"
 license-files = ["LICENSE"]
 authors = [{ name = "hollee-tom" }]
-keywords = ["html", "pptx", "powerpoint", "slides", "playwright"]
+keywords = ["html", "pptx", "powerpoint", "slides", "html-to-pptx", "editable", "export", "playwright"]
 classifiers = [
   "Programming Language :: Python :: 3",
   "Topic :: Office/Business",
@@ -20,6 +20,11 @@ dependencies = [
   "brotli>=1.1",
   "pydantic>=2.6",
 ]
+
+[project.urls]
+Homepage = "https://github.com/hollee-tom/html-to-native-pptx"
+Repository = "https://github.com/hollee-tom/html-to-native-pptx"
+Issues = "https://github.com/hollee-tom/html-to-native-pptx/issues"
 
 [project.scripts]
 html-to-native-pptx = "html_to_native_pptx.cli:main"
