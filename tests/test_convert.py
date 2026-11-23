@@ -5,16 +5,19 @@ be started.
 """
 
 import io
+import os
 import zipfile
 from collections.abc import Iterator
 from pathlib import Path
 
 import pytest
+from playwright.sync_api import sync_playwright
 from pptx import Presentation
 from pptx.util import Emu
 
-from html_to_native_pptx import ConversionError, convert, measure
+from html_to_native_pptx import ConversionError, FontResponses, convert, measure, measure_deck
 from html_to_native_pptx.cli import main
+from html_to_native_pptx.convert import EXECUTABLE_ENV
 from html_to_native_pptx.model import ChartItem, ShapeItem, TableItem, TextItem
 
 SLIDE = "<style>section{width:1280px;height:720px;position:relative;margin:0}body{margin:0}</style>"
@@ -169,3 +172,32 @@ def test_given_the_corpus_when_measured_then_its_two_tables_are_native() -> None
     deck = measure(CORPUS / "deck.html")
 
     assert sum(isinstance(i, TableItem) for s in deck.slides for i in s.items) == 2
+
+
+def test_given_an_open_page_and_custom_series_properties_when_measured_then_charts_use_them():
+    html = (
+        SLIDE + "<div class='page'><section style='--accent-a:#112233;--accent-b:#445566'>"
+        "<figure data-chart='column' style='margin:0;width:600px;height:300px'>"
+        "<table data-chart-data><thead><tr><th></th><th>S</th><th>T</th></tr></thead>"
+        "<tbody><tr><td>A</td><td>1</td><td>2</td></tr></tbody></table></figure>"
+        "<p style='position:absolute;top:400px'>Hi</p></section></div>"
+    )
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch(executable_path=os.environ.get(EXECUTABLE_ENV))
+        try:
+            page = browser.new_page(viewport={"width": 1280, "height": 720})
+            page.set_content(html)
+            deck = measure_deck(
+                page,
+                "div.page > section",
+                1280,
+                720,
+                FontResponses(),
+                fonts=False,
+                series_properties=("--accent-a", "--accent-b"),
+            )
+        finally:
+            browser.close()
+
+    (chart,) = [i for i in deck.slides[0].items if isinstance(i, ChartItem)]
+    assert [c.lower() for c in chart.colours] == ["#112233", "#445566"]

@@ -1,9 +1,10 @@
 /**
  * Runs inside the page, once, and returns the measurements of every slide as JSON.
- * Called as `page.evaluate(script, slideSelector)`; the selector names one element per slide.
+ * Called as `page.evaluate(script, options)`; `options` is `{ selector, series }`: the selector names
+ * one element per slide, and `series` lists the CSS custom properties a chart's series colours are read from.
  * The result is `{ slides, pictures, fonts }`; see html_to_native_pptx/model.py for what each part means.
  */
-(selector) => {
+({ selector, series }) => {
   const MARK = "data-html-to-native-pptx";
   const probe = document.createElement("i");
   document.body.appendChild(probe);
@@ -299,7 +300,7 @@
       cells: cells.map((cell) => cell.data),
     });
   };
-  const SERIES = ["--chart-1", "--chart-2", "--chart-3", "--chart-4", "--chart-5", "--chart-6"];
+  const SERIES = series;
   const chart = (el, origin, items, section) => {
     const caption = el.querySelector(":scope > figcaption");
     if (caption && shown(caption)) items.push(text(caption, origin, [paragraph(caption)]));

@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import json
 import logging
+from collections.abc import Sequence
 from importlib import resources
 from typing import Any
 
@@ -42,14 +43,19 @@ BACKGROUND = (
 )
 """Pictures only an element's own background, gradient and `::before`/`::after`, with its text
 made clear: the text stays native and editable, placed over this picture."""
+SERIES_PROPERTIES = ("--chart-1", "--chart-2", "--chart-3", "--chart-4", "--chart-5", "--chart-6")
+"""The CSS custom properties a chart's series colours are read from, in series order."""
 SLIDE_TOLERANCE = 2.0
 """How far, in pixels, a slide may differ from the canvas before a warning is logged."""
 
 _ITEMS: TypeAdapter[Item] = TypeAdapter(Item)
 
 
-def _script() -> str:
-    """The measuring script's source."""
+def measure_script() -> str:
+    """The measuring script's source.
+
+    For a caller driving the page itself: `page.evaluate(script, {"selector": s, "series": [...]})`.
+    """
     return resources.files("html_to_native_pptx").joinpath("assets/measure.js").read_text("utf-8")
 
 
@@ -80,14 +86,24 @@ def _picture(page: Page, mode: str, identifier: str) -> bytes | None:
 
 
 def measure_deck(
-    page: Page, selector: str, width: int, height: int, responses: FontResponses, *, fonts: bool
+    page: Page,
+    selector: str,
+    width: int,
+    height: int,
+    responses: FontResponses,
+    *,
+    fonts: bool,
+    series_properties: Sequence[str] = SERIES_PROPERTIES,
 ) -> MeasuredDeck:
     """Measure every slide `selector` matches on a loaded `page`.
 
     Raises `ConversionError` when nothing matches. With `fonts`, the font files the page loaded
-    are returned with the deck so the writer can embed them.
+    are returned with the deck so the writer can embed them. `series_properties` names the custom
+    properties chart series colours are read from, for pages that name theirs differently.
     """
-    found = page.evaluate(_script(), selector)
+    found = page.evaluate(
+        measure_script(), {"selector": selector, "series": list(series_properties)}
+    )
     measured: dict[str, Any] = json.loads(found) if isinstance(found, str) else found
     if not measured["slides"]:
         raise ConversionError(f"no element matches the slide selector {selector!r}")
