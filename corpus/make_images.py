@@ -15,9 +15,7 @@ def landscape(width: int, height: int, seed: int) -> Image.Image:
     rng = random.Random(seed)
     y = np.linspace(0, 1, height)[:, None]
     x = np.linspace(0, 1, width)[None, :]
-    sky = np.stack(
-        [60 + 150 * y + 0 * x, 90 + 110 * y + 0 * x, 170 + 60 * y + 0 * x], axis=-1
-    )
+    sky = np.stack([60 + 150 * y + 0 * x, 90 + 110 * y + 0 * x, 170 + 60 * y + 0 * x], axis=-1)
     image = sky.copy()
     for layer in range(4):
         phase, amp = rng.uniform(0, 6), rng.uniform(0.05, 0.12)

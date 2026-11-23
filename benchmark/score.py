@@ -26,6 +26,15 @@ def words(text: str) -> list[str]:
     return re.findall(r"\w+", text.lower())
 
 
+def letters(text: str) -> collections.Counter[str]:
+    """How many times each letter or digit occurs in `text`, case folded.
+
+    Text is compared as letters and digits rather than words because the page and the file
+    break words differently around inline gaps, subscripts and line breaks.
+    """
+    return collections.Counter(re.findall(r"[^\W_]", text.lower()))
+
+
 def flat(prs: Any, canvas: int) -> list[list[dict[str, Any]]]:
     """Every shape of every slide in canvas pixels, with the fill, alpha, rotation and text the
     checks need; group shapes are opened."""
@@ -77,14 +86,19 @@ def flat(prs: Any, canvas: int) -> list[list[dict[str, Any]]]:
 
 
 def structure(path: Path, ground: list[dict[str, Any]], canvas: int) -> dict[str, Any]:
-    """Word loss, text placement error and object counts for one file."""
+    """Missing text, text placement and object counts for one file.
+
+    Placement is how far each text block's centre in the HTML lies from the nearest PPTX box
+    holding its first word: zero when inside it, so a list or paragraph in one box is not
+    marked down for its lines sitting at different heights.
+    """
     prs = Presentation(str(path))
     shapes = flat(prs, canvas)
     result: dict[str, Any] = {
         "slides": len(prs.slides),
-        "words_expected": 0,
-        "words_missing": 0,
-        "words_extra": 0,
+        "characters_expected": 0,
+        "characters_missing": 0,
+        "characters_extra": 0,
         "native_text_boxes": 0,
         "native_shapes": 0,
         "native_tables": 0,
@@ -100,7 +114,10 @@ def structure(path: Path, ground: list[dict[str, Any]], canvas: int) -> dict[str
         for item in found:
             if item["pic"]:
                 result["pictures"] += 1
-                result["full_slide_pictures"] += item["w"] * item["h"] > 0.6 * canvas * canvas * prs.slide_height / prs.slide_width
+                result["full_slide_pictures"] += (
+                    item["w"] * item["h"]
+                    > 0.6 * canvas * canvas * prs.slide_height / prs.slide_width
+                )
             elif item["chart"]:
                 result["native_charts"] += 1
             elif item["tbl"]:
@@ -113,11 +130,11 @@ def structure(path: Path, ground: list[dict[str, Any]], canvas: int) -> dict[str
                 written.append(item["text"])
                 boxes.append((item["x"], item["y"], item["w"], item["h"], item["text"].lower()))
         texts = ground[number]["texts"] if number < len(ground) else []
-        have = collections.Counter(words(" ".join(written)))
-        want = collections.Counter(words(" ".join(t["t"] for t in texts)))
-        result["words_expected"] += sum(want.values())
-        result["words_missing"] += sum((want - have).values())
-        result["words_extra"] += sum((have - want).values())
+        have = letters(" ".join(written))
+        want = letters(" ".join(t["t"] for t in texts))
+        result["characters_expected"] += sum(want.values())
+        result["characters_missing"] += sum((want - have).values())
+        result["characters_extra"] += sum((have - want).values())
         tables = [f["r"] for f in ground[number]["feats"] if f["k"] == "table"]
         for text in texts:
             first = words(text["t"])
@@ -128,31 +145,35 @@ def structure(path: Path, ground: list[dict[str, Any]], canvas: int) -> dict[str
                 continue
             checked += 1
             near = [b for b in boxes if first[0] in b[4]]
-            if not any(
-                b[0] - SLACK <= cx <= b[0] + b[2] + SLACK and b[1] - SLACK <= cy <= b[1] + b[3] + SLACK
-                for b in near
-            ):
-                outside += 1
             if near:
-                errors.append(
-                    min(
-                        min(
-                            ((b[0] - text["x"]) ** 2 + (b[1] - text["y"]) ** 2) ** 0.5,
-                            ((b[0] + b[2] / 2 - cx) ** 2 + (b[1] + b[3] / 2 - cy) ** 2) ** 0.5,
-                        )
-                        for b in near
-                    )
-                )
+                distance = min(_gap(b, cx, cy) for b in near)
+                errors.append(distance)
+                outside += distance > SLACK
+            else:
+                outside += 1
     errors.sort()
     result["text_blocks_checked"] = checked
     result["text_blocks_outside_source_box"] = outside
-    result["placement_median_px"] = round(statistics.median(errors), 1) if errors else None
-    result["placement_p90_px"] = round(errors[int(len(errors) * 0.9)], 1) if errors else None
+    result["text_centre_distance_median_px"] = (
+        round(statistics.median(errors), 1) if errors else None
+    )
+    result["text_centre_distance_p90_px"] = (
+        round(errors[int(len(errors) * 0.9)], 1) if errors else None
+    )
     with zipfile.ZipFile(path) as package:
         result["embedded_font_parts"] = sum(
-            1 for name in package.namelist() if name.startswith("ppt/fonts/") and not name.endswith(".rels")
+            1
+            for name in package.namelist()
+            if name.startswith("ppt/fonts/") and not name.endswith(".rels")
         )
     return result
+
+
+def _gap(box: tuple[float, float, float, float, str], cx: float, cy: float) -> float:
+    """How far the point (cx, cy) is from the rectangle `box`; zero inside it."""
+    dx = max(box[0] - cx, 0, cx - (box[0] + box[2]))
+    dy = max(box[1] - cy, 0, cy - (box[1] + box[3]))
+    return float((dx * dx + dy * dy) ** 0.5)
 
 
 def _overlap(a: dict[str, Any], r: list[float]) -> tuple[float, float]:
@@ -192,21 +213,30 @@ def features(path: Path, ground: list[dict[str, Any]], canvas: int) -> dict[str,
             kind, r = feat["k"], feat["r"]
             text = _norm(feat.get("txt", ""))
             if kind in ("chip", "pborder") and any(
-                t[0] - 2 <= r[0] + r[2] / 2 <= t[0] + t[2] + 2 and t[1] - 2 <= r[1] + r[3] / 2 <= t[1] + t[3] + 2
+                t[0] - 2 <= r[0] + r[2] / 2 <= t[0] + t[2] + 2
+                and t[1] - 2 <= r[1] + r[3] / 2 <= t[1] + t[3] + 2
                 for t in tables
             ):
                 continue
             ok = False
             if kind == "chip":
                 ok = any(
-                    s["fill"] and not s["pic"] and _overlap(s, r)[0] > 0.5
+                    s["fill"]
+                    and not s["pic"]
+                    and _overlap(s, r)[0] > 0.5
                     and _close(_rgb(s["fill"]), feat["bg"][:3])
                     for s in have
                 ) or any(
-                    text[:10] in _norm(s["text"]) and _highlight(s["el"], feat["bg"][:3]) for s in have if s["text"]
+                    text[:10] in _norm(s["text"]) and _highlight(s["el"], feat["bg"][:3])
+                    for s in have
+                    if s["text"]
                 )
             elif kind == "opacity":
-                ok = any(_faded(s["el"], s["alpha"], feat["col"]) for s in have if s["text"] and text[:12] in _norm(s["text"]))
+                ok = any(
+                    _faded(s["el"], s["alpha"], feat["col"])
+                    for s in have
+                    if s["text"] and text[:12] in _norm(s["text"])
+                )
             elif kind == "rot":
                 ok = any(
                     abs((s["rot"] - feat["ang"] + 180) % 360 - 180) < 3
@@ -215,12 +245,20 @@ def features(path: Path, ground: list[dict[str, Any]], canvas: int) -> dict[str,
                 )
             elif kind == "ls":
                 ok = any(
-                    _spaced(s["el"], feat["ls"]) for s in have if s["text"] and text[:10] in _norm(s["text"])
+                    _spaced(s["el"], feat["ls"])
+                    for s in have
+                    if s["text"] and text[:10] in _norm(s["text"])
                 )
             elif kind == "pborder":
-                ok = all(_strip(have, r, side, wd) for side, on, wd in zip("TRBL", feat["sides"], feat["w"], strict=True) if on)
+                ok = all(
+                    _strip(have, r, side, wd)
+                    for side, on, wd in zip("TRBL", feat["sides"], feat["w"], strict=True)
+                    if on
+                )
             elif kind == "table":
-                ok = any(s["tbl"] and abs(s["x"] - r[0]) < 8 and abs(s["y"] - r[1]) < 8 for s in have)
+                ok = any(
+                    s["tbl"] and abs(s["x"] - r[0]) < 8 and abs(s["y"] - r[1]) < 8 for s in have
+                )
             elif kind == "chart":
                 ok = any(s["chart"] and _overlap(s, r)[0] > 0.3 for s in have)
             elif kind in ("img", "svg"):
@@ -271,7 +309,8 @@ def _strip(have: list[dict[str, Any]], r: list[float], side: str, width: float) 
         horizontal = side in "TB" and s["h"] <= width * 2 + 3 and s["w"] >= r[2] * 0.5
         vertical = side in "LR" and s["w"] <= width * 2 + 3 and s["h"] >= r[3] * 0.5
         if (horizontal or vertical) and (
-            r[0] - 4 <= s["x"] + s["w"] / 2 <= r[0] + r[2] + 4 and r[1] - 4 <= s["y"] + s["h"] / 2 <= r[1] + r[3] + 4
+            r[0] - 4 <= s["x"] + s["w"] / 2 <= r[0] + r[2] + 4
+            and r[1] - 4 <= s["y"] + s["h"] / 2 <= r[1] + r[3] + 4
         ):
             return True
     return False

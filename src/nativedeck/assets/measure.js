@@ -423,7 +423,10 @@
     if (tag === "UL" || tag === "OL") return void block(listed(el, 0, []));
     if (tag === "BLOCKQUOTE") {
       const parts = [...el.children].filter((child) => (child.tagName === "P" || child.tagName === "CITE") && shown(child));
-      return void block(parts.length ? parts.map((part, at) => paragraph(part, { space_before: at ? px(getComputedStyle(part).marginTop) : 0 })) : [paragraph(el)]);
+      // Text written straight into the quote, ahead of or around a <cite>, is a paragraph too.
+      const lead = [...el.childNodes].filter((n) => n.nodeType === 3 && n.textContent.trim()).map((n) => textRun(n, el, null)).filter(Boolean);
+      const lines = parts.map((part, at) => paragraph(part, { space_before: at || lead.length ? px(getComputedStyle(part).marginTop) : 0 }));
+      return void block(lead.length ? [paragraph(el, { runs: tidy(lead) }), ...lines] : lines.length ? lines : [paragraph(el)]);
     }
     if (inlineContent(el) && el.textContent.trim()) return void block([paragraph(el)]);
     const filled = s.backgroundImage === "none" ? hex(s.backgroundColor) : null;

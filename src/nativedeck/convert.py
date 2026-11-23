@@ -8,7 +8,7 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright
 
 from nativedeck.fontfiles import FontResponses
-from nativedeck.measure import measure_deck
+from nativedeck.measurer import measure_deck
 from nativedeck.model import MeasuredDeck
 from nativedeck.pages import launch, open_page, source_url
 from nativedeck.writer import deck_pptx

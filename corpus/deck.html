@@ -85,7 +85,7 @@ td { padding: 12px 14px; }
 <ul style="font-size:26px;flex:1"><li>First point</li><li>Second point<ul style="font-size:22px"><li>Nested one</li><li>Nested two</li></ul></li><li>Third point</li></ul>
 <ol style="font-size:26px;flex:1"><li>Step one</li><li>Step two</li><li>Step three</li></ol></div></section>
 <section class="" style=""><p class="eyebrow">Shapes</p><h2>Key figures</h2><div class="row">
-<div class="card grow" style="text-align:center"><div data-shape="ellipse" style="width:90px;height:90px;background:var(--brand);margin:0 auto 12px"></div><div class="num">42%</div><p>Adoption</p></div>
+<div class="card grow" style="text-align:center"><div data-shape="ellipse" style="width:90px;height:90px;background:var(--brand);border-radius:50%;margin:0 auto 12px"></div><div class="num">42%</div><p>Adoption</p></div>
 <div class="card grow" style="text-align:center"><div style="width:90px;height:90px;background:var(--warm);border-radius:50%;margin:0 auto 12px"></div><div class="num">1.8k</div><p>Teams</p></div>
 <div class="card grow" style="text-align:center;border:2px solid var(--mint)"><div data-shape="line" style="width:140px;height:4px;background:var(--mint);margin:43px auto 51px"></div><div class="num">99.9</div><p>Uptime</p></div></div></section>
 <section class="" style=""><p class="eyebrow">Fallback pictures</p><h2>What PowerPoint cannot draw</h2><div class="row">
@@ -95,10 +95,11 @@ td { padding: 12px 14px; }
 <section class="" style=""><p class="eyebrow">Known gaps</p><h2>Not carried over</h2><div class="row">
 <div class="card grow" style="border:3px dashed var(--brand)"><b>Dashed border</b><p>Drawn solid.</p></div>
 <div class="card grow" style="box-shadow:0 12px 30px rgba(0,0,0,.25)"><b>Box shadow</b><p>Not drawn.</p></div>
+<div class="card grow"><b>Pseudo outside box</b><p class="out" style="position:relative">Mark above.<style>.out::before{content:"";position:absolute;left:0;top:-30px;width:80px;height:10px;background:var(--gold)}</style></p></div>
 <div class="card grow"><b>Inline rotated badge</b><p>Text with a <span style="display:inline-block;transform:rotate(8deg);background:var(--warm);color:#fff;padding:2px 10px;border-radius:6px;font-weight:700">NEW</span> turn.</p></div></div></section>
-<section class="" style=""><style>.q::before{content:"\201C";position:absolute;left:-10px;top:-40px;font:400 140px/1 'DM Serif Display';color:var(--brand)} .u{position:relative;display:inline-block} .u::after{content:"";position:absolute;left:0;bottom:-6px;width:100%;height:6px;background:var(--warm)}</style>
+<section class="" style=""><style>.q::before{content:"\201C";position:absolute;left:0;top:0;font:400 140px/1 'DM Serif Display';color:var(--brand)} .u{position:relative;display:inline-block;padding-bottom:8px} .u::after{content:"";position:absolute;left:0;bottom:0;width:100%;height:6px;background:var(--warm)}</style>
 <p class="eyebrow">Pseudo-elements</p><h2>Marks drawn by CSS</h2>
-<div class="q" style="position:relative;margin:50px 0 0 70px;font:italic 400 40px/1.25 'DM Serif Display';max-width:800px">Decoration from ::before and ::after stays a picture, the words stay text.</div>
+<div class="q" style="position:relative;margin:50px 0 0 0;padding-left:70px;padding-top:20px;font:italic 400 40px/1.25 'DM Serif Display';max-width:800px">Decoration from ::before and ::after stays a picture, the words stay text.</div>
 <p style="margin-top:50px;font-size:34px">Underlined by <span class="u">a pseudo bar</span> below.</p></section>
 <section class="dark" style=""><p class="eyebrow" style="color:#7dd3fc">Rich text</p><h2>Inline formatting</h2>
 <p style="font-size:26px;max-width:900px">Water is H<sub>2</sub>O, area is m<sup>2</sup>, <u>underlined</u>, <s>struck</s>, <mark style="background:#fde047;color:#111;padding:0 4px">highlighted</mark>, a <a href="https://example.com" style="color:#7dd3fc">link</a> and <b>bold</b> <i>italic</i> <span style="text-transform:uppercase;letter-spacing:.08em">uppercased</span> words.</p></section>

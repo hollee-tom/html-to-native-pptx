@@ -113,7 +113,7 @@ class Variable:
         if self.allowed:
             try:
                 fixed = instancer.instantiateVariableFont(self.font, location)
-                _renamed(fixed, typeface, weight, bold, slanted)
+                renamed(fixed, typeface, weight, bold, slanted)
                 embedded = _eot(_truetype(fixed))
             except (TTLibError, KeyError, ValueError, AssertionError, struct.error) as error:
                 logger.warning("font not embedded: %s", type(error).__name__)
@@ -249,7 +249,7 @@ def _weight_name(weight: int) -> str:
     return WEIGHT_NAMES.get(weight, str(weight))
 
 
-def _renamed(font: TTFont, typeface: str, weight: int, bold: bool, italic: bool) -> None:
+def renamed(font: TTFont, typeface: str, weight: int, bold: bool, italic: bool) -> None:
     """Name a weight cut from a variable font as a fixed font of its own, so PowerPoint
     matches it by `typeface` and its regular, bold or italic slot.
     """

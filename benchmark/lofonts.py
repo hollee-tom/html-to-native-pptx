@@ -14,7 +14,7 @@ from pathlib import Path
 from fontTools.ttLib import TTFont
 from fontTools.varLib import instancer
 
-from nativedeck.fonts import WEIGHT_NAMES, _renamed
+from nativedeck.fonts import WEIGHT_NAMES, renamed
 
 WEIGHTS = (300, 400, 500, 600, 700, 800)
 
@@ -34,6 +34,6 @@ def install(fonts: Path, target: Path) -> None:
                 TTFont(path), {**{t: a.defaultValue for t, a in axes.items()}, "wght": weight}
             )
             name = family if weight in (400, 700) else f"{family} {WEIGHT_NAMES[weight]}"
-            _renamed(cut, name, weight, weight == 700, False)
+            renamed(cut, name, weight, weight == 700, False)
             cut.save(target / f"{family}-{weight}.ttf")
     subprocess.run(["fc-cache", "-f"], check=True, capture_output=True)

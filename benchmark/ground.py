@@ -23,22 +23,13 @@ return slides.map((slide) => {
   const feats = []; const texts = [];
   slide.querySelectorAll("*").forEach((e) => {
     if (e.closest("svg") && e.tagName !== "svg") return;
+    if (e.closest("figure[data-chart]") && e.tagName !== "FIGURE" && !e.matches("figcaption, figcaption *")) return;
     const cs = getComputedStyle(e);
     if (cs.display === "none" || cs.visibility === "hidden") return;
     const r = R(e);
     if (r[2] <= 0 || r[3] <= 0) return;
     const own = [...e.childNodes].filter((n) => n.nodeType === 3 && n.textContent.trim());
     const txt = (e.innerText || "").trim().slice(0, 40);
-    if (own.length && !e.closest("table[data-chart-data]")) {
-      const range = document.createRange();
-      let box = null;
-      for (const n of own) {
-        range.selectNodeContents(n);
-        const b = range.getBoundingClientRect();
-        box = box ? [Math.min(box[0], b.left), Math.min(box[1], b.top), Math.max(box[2], b.right), Math.max(box[3], b.bottom)] : [b.left, b.top, b.right, b.bottom];
-      }
-      texts.push({ t: own.map((n) => n.textContent).join(" "), x: box[0] - origin.x, y: box[1] - origin.y, w: box[2] - box[0], h: box[3] - box[1], svg: false });
-    }
     const bg = rgba(cs.backgroundColor);
     if (bg && bg[3] > 0.3 && own.length && r[2] * r[3] < 0.15 * origin.width * origin.height && r[3] < 80 && cs.backgroundClip !== "text")
       feats.push({ k: "chip", r, txt, bg });
@@ -60,6 +51,30 @@ return slides.map((slide) => {
     if (e.tagName === "IMG") feats.push({ k: "img", r, txt: "" });
     if (e.tagName === "FIGURE" && e.hasAttribute("data-chart")) feats.push({ k: "chart", r, txt: "" });
   });
+  // Text is recorded per block: the text nodes whose nearest non-inline ancestor is the same
+  // element are one text, as a PowerPoint text box holds them, so inline spans do not count as
+  // blocks of their own.
+  const blocks = new Map();
+  const walker = document.createTreeWalker(slide, NodeFilter.SHOW_TEXT);
+  for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+    const parent = n.parentElement;
+    if (!n.textContent.trim() || parent.closest("svg, script, style, table[data-chart-data]")) continue;
+    if (parent.closest("figure[data-chart]") && !parent.closest("figcaption")) continue;
+    const ps = getComputedStyle(parent);
+    if (ps.display === "none" || ps.visibility === "hidden") continue;
+    let block = parent;
+    while (block !== slide && getComputedStyle(block).display.startsWith("inline")) block = block.parentElement;
+    const range = document.createRange();
+    range.selectNodeContents(n);
+    const b = range.getBoundingClientRect();
+    if (!b.width || !b.height) continue;
+    const held = blocks.get(block) || { t: "", box: [Infinity, Infinity, -Infinity, -Infinity] };
+    held.t += n.textContent;
+    held.box = [Math.min(held.box[0], b.left), Math.min(held.box[1], b.top), Math.max(held.box[2], b.right), Math.max(held.box[3], b.bottom)];
+    blocks.set(block, held);
+  }
+  for (const { t, box } of blocks.values())
+    texts.push({ t, x: box[0] - origin.x, y: box[1] - origin.y, w: box[2] - box[0], h: box[3] - box[1], svg: false });
   return { feats, texts };
 });
 }"""

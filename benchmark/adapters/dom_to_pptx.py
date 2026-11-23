@@ -14,7 +14,10 @@ from pathlib import Path
 
 from playwright.sync_api import sync_playwright
 
-BUNDLE = Path(os.environ.get("DOM_TO_PPTX_DIR", "/opt/dom-to-pptx")) / "node_modules/dom-to-pptx/dist/dom-to-pptx.bundle.js"
+BUNDLE = (
+    Path(os.environ.get("DOM_TO_PPTX_DIR", "/opt/dom-to-pptx"))
+    / "node_modules/dom-to-pptx/dist/dom-to-pptx.bundle.js"
+)
 EXPORT = """async (options) => {
   const slides = [...document.querySelectorAll(options.selector)];
   const blob = await window.domToPptx.exportToPptx(slides, { skipDownload: true, fileName: "x.pptx", width: options.width / 96, height: options.height / 96 });
@@ -33,7 +36,11 @@ def main(html: str, out: str, selector: str, width: int, height: int) -> None:
         page.goto(Path(html).resolve().as_uri(), wait_until="load")
         page.evaluate("document.fonts.ready.then(() => true)")
         page.add_script_tag(path=str(BUNDLE))
-        Path(out).write_bytes(base64.b64decode(page.evaluate(EXPORT, {"selector": selector, "width": width, "height": height})))
+        Path(out).write_bytes(
+            base64.b64decode(
+                page.evaluate(EXPORT, {"selector": selector, "width": width, "height": height})
+            )
+        )
         browser.close()
 
 

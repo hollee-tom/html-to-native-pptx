@@ -70,9 +70,9 @@ def write_paragraphs(
 def _bullet(element: etree._Element, paragraph: Paragraph) -> None:
     """Give a paragraph a bullet or a number, indented for its list level."""
     properties = element.get_or_add_pPr()
-    indent = emu(28 * (paragraph.level + 1))
+    indent = emu(36 * (paragraph.level + 1))
     properties.set("marL", str(int(indent)))
-    properties.set("indent", str(-int(emu(22))))
+    properties.set("indent", str(-int(emu(30))))
     for old in properties.findall(qn("a:buNone")):
         properties.remove(old)
     if paragraph.bullet == "number":
