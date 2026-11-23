@@ -1,0 +1,67 @@
+[project]
+name = "nativedeck"
+version = "0.1.0"
+description = "High-fidelity HTML to native, editable PowerPoint."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "hollee-tom" }]
+keywords = ["html", "pptx", "powerpoint", "slides", "playwright"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Topic :: Office/Business",
+  "Typing :: Typed",
+]
+dependencies = [
+  "playwright>=1.49",
+  "python-pptx>=1.0",
+  "fonttools>=4.50",
+  "brotli>=1.1",
+  "pydantic>=2.6",
+]
+
+[project.scripts]
+nativedeck = "nativedeck.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=8", "ruff>=0.6", "mypy>=1.11", "pillow>=10", "numpy>=1.26", "lxml-stubs"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/nativedeck"]
+
+[tool.ruff]
+line-length = 100
+src = ["src", "tests", "benchmark"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "D1"]
+ignore = ["D105", "D107"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["D"]
+"benchmark/*" = ["D"]
+
+[tool.mypy]
+strict = true
+files = ["src", "tests"]
+plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = ["pptx.*", "fontTools.*", "lxml.*"]
+ignore_missing_imports = true
+follow_untyped_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["browser: needs Chromium"]
+
+# python-pptx and fontTools ship no usable type information; their dynamic attributes are
+# relaxed in the two modules that wrap them, and everything else stays strict.
+[[tool.mypy.overrides]]
+module = ["nativedeck.fonts", "nativedeck.writer.*"]
+disable_error_code = ["attr-defined", "no-untyped-call", "arg-type", "no-any-return", "union-attr", "index"]

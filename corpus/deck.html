@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>nativedeck synthetic corpus</title><style>
+@font-face { font-family: "Inter"; src: url("fonts/Inter-Variable.ttf") format("truetype"); font-weight: 100 900; font-style: normal; }
+@font-face { font-family: "DM Serif Display"; src: url("fonts/DMSerifDisplay-Regular.ttf") format("truetype"); font-weight: 400; font-style: normal; }
+@font-face { font-family: "DM Serif Display"; src: url("fonts/DMSerifDisplay-Italic.ttf") format("truetype"); font-weight: 400; font-style: italic; }
+@font-face { font-family: "IBM Plex Mono"; src: url("fonts/IBMPlexMono-Regular.ttf") format("truetype"); font-weight: 400; }
+@font-face { font-family: "IBM Plex Mono"; src: url("fonts/IBMPlexMono-Medium.ttf") format("truetype"); font-weight: 500; }
+:root { --ink:#16181d; --paper:#f6f4ef; --brand:#2f5bea; --warm:#e8590c; --mint:#12b886; --gold:#f59f00; --mute:#6b7280; --chart-1:#2f5bea; --chart-2:#e8590c; --chart-3:#12b886; --chart-4:#f59f00; }
+* { box-sizing: border-box; }
+body { margin: 0; background: #888; }
+section { position: relative; width: 1280px; height: 720px; overflow: hidden; margin: 0 0 8px; padding: 64px 80px; background: var(--paper); color: var(--ink); font: 400 22px/1.4 "Inter", sans-serif; }
+section.dark { background: #0f172a; color: #f1f5f9; }
+h1, h2, h3, p, ul, ol, blockquote, figure { margin: 0; }
+h2 { font: 400 52px/1.1 "DM Serif Display", serif; margin-bottom: 28px; }
+.eyebrow { font: 600 14px/1 "Inter"; letter-spacing: 0.22em; text-transform: uppercase; color: var(--brand); margin-bottom: 18px; }
+.chip { display: inline-block; padding: 2px 12px; border-radius: 999px; font-size: 16px; font-weight: 600; background: #dbe4ff; color: #1c3faa; }
+.chip.ok { background: #d3f9d8; color: #1b6b2c; } .chip.warn { background: #fff0cc; color: #8a5a00; } .chip.bad { background: #ffe0e0; color: #a12020; }
+table { border-collapse: collapse; width: 100%; font-size: 20px; }
+th { text-align: left; font-size: 14px; letter-spacing: .12em; text-transform: uppercase; color: var(--mute); padding: 10px 14px; border-bottom: 2px solid var(--ink); }
+td { padding: 12px 14px; }
+.card { background: #fff; border-radius: 16px; padding: 24px; }
+.row { display: flex; gap: 24px; }
+.grow { flex: 1; }
+.num { font: 500 64px/1 "Inter"; letter-spacing: -0.03em; }
+</style></head><body>
+<section class="" style=""><p class="eyebrow" style="margin-top:120px">Synthetic corpus &middot; Slide 01</p>
+<h1 style="font:400 112px/1.02 'DM Serif Display',serif;background:linear-gradient(90deg,#2f5bea,#e8590c);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;max-width:900px">Native slides from plain HTML</h1>
+<p style="margin-top:28px;font-size:28px;color:var(--mute);max-width:720px">A gradient heading clipped to its text, a letter-spaced label and a pseudo-element bar.</p>
+<div class="bar" style="position:absolute;left:80px;top:96px;width:120px;height:6px;background:var(--brand)"></div></section>
+<section class="" style=""><p class="eyebrow">Agenda</p><h2>What we cover</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px 60px;font-size:30px">
+<p><b style="margin-right:18px;color:var(--brand)">01</b>Agenda</p><p><span style="margin-right:22px;color:var(--brand);font-weight:700">02</span>Inline gaps</p>
+<p><span style="margin:0 20px 0 0;color:var(--brand);font-weight:700">03</span>Letter-spaced labels</p><p><span style="padding-right:26px;color:var(--brand);font-weight:700">04</span>Chips in tables</p>
+<p style="letter-spacing:.3em;font-size:20px;text-transform:uppercase">Spaced out label</p><p style="letter-spacing:-0.04em;font-size:44px;font-weight:700">Tight display</p></div></section>
+<section class="" style=""><p class="eyebrow">Status</p><h2>Chips in text and in cells</h2>
+<p style="margin-bottom:28px">Build is <span class="chip ok">passing</span> and review is <span class="chip warn">pending</span>, while deploy is <span class="chip bad">blocked</span> today.</p>
+<table><thead><tr><th>Service</th><th>Owner</th><th>Status</th></tr></thead><tbody>
+<tr><td>Gateway</td><td>Ada</td><td><span class="chip ok">Healthy</span></td></tr>
+<tr><td>Search</td><td>Grace</td><td><span class="chip warn">Degraded</span> <span class="chip">2 alerts</span></td></tr>
+<tr><td>Billing</td><td>Alan</td><td><span class="chip bad">Down</span></td></tr></tbody></table></section>
+<section class="" style=""><p class="eyebrow">Tables</p><h2>Borders on some sides</h2>
+<table style="font-size:20px"><thead><tr><th style="border-bottom:3px solid var(--brand)">Region</th><th colspan="2" style="text-align:center;border-bottom:3px solid var(--brand)">Revenue</th></tr></thead><tbody>
+<tr><td style="border-bottom:1px solid #cbd5e1">North</td><td style="border-bottom:1px solid #cbd5e1;text-align:right">1,240</td><td style="border-bottom:1px solid #cbd5e1;text-align:right">+8%</td></tr>
+<tr><td rowspan="2" style="border-left:6px solid var(--warm);background:#fff">South (two rows)</td><td style="text-align:right;background:#fff">980</td><td style="text-align:right;background:#fff">-2%</td></tr>
+<tr><td style="text-align:right;background:#fff">410</td><td style="text-align:right;background:#fff">+11%</td></tr>
+<tr><td style="border-top:1px solid #cbd5e1;border-right:1px solid #cbd5e1">West</td><td style="border-top:1px solid #cbd5e1;text-align:right">770</td><td style="border-top:1px solid #cbd5e1;text-align:right">+4%</td></tr></tbody></table></section>
+<section class="" style=""><p class="eyebrow">Opacity</p><h2>Fading text and shapes</h2>
+<div style="position:relative;height:360px">
+<div style="position:absolute;left:0;top:0;width:360px;height:300px;background:var(--brand);opacity:.35;border-radius:20px"></div>
+<div style="position:absolute;left:200px;top:60px;width:360px;height:300px;background:var(--warm);opacity:.6;border-radius:20px"></div>
+<p style="position:absolute;left:600px;top:0;font-size:40px;font-weight:700;opacity:.25">Quarter-strength</p>
+<p style="position:absolute;left:600px;top:70px;font-size:40px;font-weight:700;opacity:.6">Sixty percent</p>
+<div style="position:absolute;left:600px;top:150px;opacity:.5"><p style="font-size:28px;color:var(--brand)">Ancestor at 50%</p><p style="font-size:20px"><span class="chip">chip inside</span></p></div></div></section>
+<section class="" style=""><p class="eyebrow">Rotation</p><h2>Turned cards</h2>
+<div style="position:relative;height:420px">
+<div class="card" style="position:absolute;left:20px;top:40px;width:300px;height:200px;transform:rotate(-4deg);border:2px solid var(--brand)"><b>Card A</b><br>Tilted left</div>
+<div class="card" style="position:absolute;left:380px;top:60px;width:300px;height:200px;transform:rotate(6deg);background:#fff3bf"><b>Card B</b><br>Tilted right</div>
+<div style="position:absolute;left:760px;top:70px;width:200px;height:90px;transform:rotate(-12deg);background:var(--mint);color:#fff;border-radius:12px;padding:24px;font-weight:700;font-size:26px">Stamp</div>
+<p style="position:absolute;left:20px;top:320px">An inline <span style="display:inline-block;transform:rotate(-5deg);border:2px solid var(--warm);color:var(--warm);padding:0 10px;font-weight:700;letter-spacing:.1em">BADGE</span> turned in a sentence.</p></div></section>
+<section class="" style=""><p class="eyebrow">Partial borders</p><h2>Rules instead of boxes</h2>
+<div class="row"><div class="card grow" style="border-top:6px solid var(--brand)"><b>Top rule</b><p>Only the top is bordered.</p></div>
+<div class="card grow" style="border-left:6px solid var(--warm);border-radius:0"><b>Left rule</b><p>Only the left.</p></div>
+<div class="card grow" style="border-bottom:4px solid var(--mint);border-top:1px solid #cbd5e1"><b>Two sides</b><p>Top hairline, thick bottom.</p></div>
+<div class="card grow" style="border:2px solid var(--ink)"><b>All sides</b><p>An outline.</p></div></div>
+<blockquote style="margin-top:36px;border-left:4px solid var(--gold);padding-left:24px;font:italic 30px/1.3 'DM Serif Display',serif">Borders on some sides are drawn as strips.<cite style="display:block;font:500 16px 'Inter';margin-top:8px">The exporter</cite></blockquote></section>
+<section class="" style="background:url(images/backdrop.jpg) center/cover"><div style="position:absolute;left:0;bottom:0;width:100%;height:340px;background:rgba(10,20,40,.55)"></div>
+<h1 style="position:absolute;left:80px;top:420px;font:400 80px/1 'DM Serif Display';color:#fff">Over a full photo</h1>
+<p style="position:absolute;left:80px;top:540px;color:#e2e8f0;font-size:28px">A translucent overlay keeps the text legible.</p></section>
+<section class="" style=""><p class="eyebrow">Positioning</p><h2>A wrapper with no height</h2>
+<div class="wrap" style="height:0;position:relative">
+<div style="position:absolute;left:0;top:20px;width:340px;padding:24px;background:#fff;border-radius:14px;box-shadow:none"><b>Child one</b><p>Absolutely placed.</p></div>
+<div style="position:absolute;left:380px;top:60px;width:340px;padding:24px;background:var(--brand);color:#fff;border-radius:14px"><b>Child two</b><p>Also placed.</p></div>
+<p style="position:absolute;left:760px;top:30px;width:340px;font-size:26px">Text with no box of its own parent.</p></div></section>
+<section class="" style=""><p class="eyebrow">Charts</p><h2>A native column chart</h2><figure data-chart="column" data-labels="on" data-legend="bottom" data-format="currency:USD" style="width:900px"><figcaption style="font:600 18px Inter;color:var(--mute);margin-bottom:8px">Revenue by quarter</figcaption><div data-chart-drawing style="width:100%;height:300px"></div><table data-chart-data style="display:none"><thead><tr><th></th><th>2024</th><th>2025</th></tr></thead><tbody><tr><td>Q1</td><td>12</td><td>15</td></tr><tr><td>Q2</td><td>18</td><td>21</td></tr><tr><td>Q3</td><td>14</td><td>26</td></tr><tr><td>Q4</td><td>22</td><td>31</td></tr></tbody></table></figure></section>
+<section class="" style=""><p class="eyebrow">Charts</p><h2>Line and pie</h2><div class="row"><figure data-chart="line" data-legend="top" style="width:640px"><figcaption style="font:600 18px Inter;color:var(--mute);margin-bottom:8px">Weekly traffic</figcaption><div data-chart-drawing style="width:100%;height:300px"></div><table data-chart-data style="display:none"><thead><tr><th></th><th>Visits</th><th>Signups</th></tr></thead><tbody><tr><td>Mon</td><td>40</td><td>12</td></tr><tr><td>Tue</td><td>55</td><td>18</td></tr><tr><td>Wed</td><td>48</td><td>22</td></tr><tr><td>Thu</td><td>70</td><td>30</td></tr></tbody></table></figure><figure data-chart="pie" data-legend="right" data-labels="on" data-format="percent" style="width:420px"><figcaption style="font:600 18px Inter;color:var(--mute);margin-bottom:8px">Channel share</figcaption><div data-chart-drawing style="width:100%;height:300px"></div><table data-chart-data style="display:none"><thead><tr><th></th><th>Share</th></tr></thead><tbody><tr><td>Web</td><td>55</td></tr><tr><td>Mobile</td><td>30</td></tr><tr><td>Other</td><td>15</td></tr></tbody></table></figure></div></section>
+<section class="" style=""><p class="eyebrow">Charts</p><h2>Stacked bars and a combo</h2><div class="row"><figure data-chart="bar-stacked"  style="width:540px"><figcaption style="font:600 18px Inter;color:var(--mute);margin-bottom:8px">Stacked</figcaption><div data-chart-drawing style="width:100%;height:300px"></div><table data-chart-data style="display:none"><thead><tr><th></th><th>A</th><th>B</th></tr></thead><tbody><tr><td>North</td><td>30</td><td>20</td></tr><tr><td>South</td><td>25</td><td>35</td></tr><tr><td>West</td><td>40</td><td>15</td></tr></tbody></table></figure><figure data-chart="combo" data-axis-min="0" data-axis-max="100" style="width:540px"><figcaption style="font:600 18px Inter;color:var(--mute);margin-bottom:8px">Volume and rate</figcaption><div data-chart-drawing style="width:100%;height:300px"></div><table data-chart-data style="display:none"><thead><tr><th></th><th>Volume</th><th>Rate</th></tr></thead><tbody><tr><td>Jan</td><td>40</td><td>60</td></tr><tr><td>Feb</td><td>55</td><td>65</td></tr><tr><td>Mar</td><td>70</td><td>80</td></tr></tbody></table></figure></div></section>
+<section class="" style=""><p class="eyebrow">Variable font</p><h2>One file, many weights</h2>
+<p style="font-weight:300;font-size:36px">Inter Light 300 &mdash; quick brown fox</p><p style="font-weight:400;font-size:36px">Inter Regular 400 &mdash; quick brown fox</p>
+<p style="font-weight:600;font-size:36px">Inter Semibold 600 &mdash; quick brown fox</p><p style="font-weight:800;font-size:36px">Inter ExtraBold 800 &mdash; quick brown fox</p>
+<p style="font-weight:700;font-style:italic;font-size:30px;margin-top:20px">Bold with a synthesised italic</p></section>
+<section class="" style=""><p class="eyebrow">Static fonts</p><h2>Regular, italic and mono</h2>
+<p style="font:400 56px/1.1 'DM Serif Display'">DM Serif Display regular</p><p style="font:italic 400 56px/1.1 'DM Serif Display'">DM Serif Display italic</p>
+<p style="font:400 28px/1.5 'IBM Plex Mono';margin-top:24px">IBM Plex Mono 400: const total = 42;</p><p style="font:500 28px/1.5 'IBM Plex Mono'">IBM Plex Mono 500: return total;</p></section>
+<section class="" style=""><p class="eyebrow">Lists</p><h2>Bullets, numbers and quotes</h2><div class="row">
+<ul style="font-size:26px;flex:1"><li>First point</li><li>Second point<ul style="font-size:22px"><li>Nested one</li><li>Nested two</li></ul></li><li>Third point</li></ul>
+<ol style="font-size:26px;flex:1"><li>Step one</li><li>Step two</li><li>Step three</li></ol></div></section>
+<section class="" style=""><p class="eyebrow">Shapes</p><h2>Key figures</h2><div class="row">
+<div class="card grow" style="text-align:center"><div data-shape="ellipse" style="width:90px;height:90px;background:var(--brand);margin:0 auto 12px"></div><div class="num">42%</div><p>Adoption</p></div>
+<div class="card grow" style="text-align:center"><div style="width:90px;height:90px;background:var(--warm);border-radius:50%;margin:0 auto 12px"></div><div class="num">1.8k</div><p>Teams</p></div>
+<div class="card grow" style="text-align:center;border:2px solid var(--mint)"><div data-shape="line" style="width:140px;height:4px;background:var(--mint);margin:43px auto 51px"></div><div class="num">99.9</div><p>Uptime</p></div></div></section>
+<section class="" style=""><p class="eyebrow">Fallback pictures</p><h2>What PowerPoint cannot draw</h2><div class="row">
+<div class="card grow" style="background:linear-gradient(135deg,#2f5bea,#12b886);color:#fff;height:260px"><b>Gradient card</b><p>Picture behind native text.</p></div>
+<div class="card grow" style="padding:0;overflow:hidden;height:260px"><img src="images/card.jpg" style="width:100%;height:100%;object-fit:cover" alt=""></div>
+<div class="card grow" style="height:260px"><svg width="120" height="120" viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" fill="none" stroke="#2f5bea" stroke-width="10"/><path d="M30 62l20 20 40-44" fill="none" stroke="#12b886" stroke-width="10"/></svg><p>Inline SVG becomes a picture.</p></div></div></section>
+<section class="" style=""><p class="eyebrow">Known gaps</p><h2>Not carried over</h2><div class="row">
+<div class="card grow" style="border:3px dashed var(--brand)"><b>Dashed border</b><p>Drawn solid.</p></div>
+<div class="card grow" style="box-shadow:0 12px 30px rgba(0,0,0,.25)"><b>Box shadow</b><p>Not drawn.</p></div>
+<div class="card grow"><b>Inline rotated badge</b><p>Text with a <span style="display:inline-block;transform:rotate(8deg);background:var(--warm);color:#fff;padding:2px 10px;border-radius:6px;font-weight:700">NEW</span> turn.</p></div></div></section>
+<section class="" style=""><style>.q::before{content:"\201C";position:absolute;left:-10px;top:-40px;font:400 140px/1 'DM Serif Display';color:var(--brand)} .u{position:relative;display:inline-block} .u::after{content:"";position:absolute;left:0;bottom:-6px;width:100%;height:6px;background:var(--warm)}</style>
+<p class="eyebrow">Pseudo-elements</p><h2>Marks drawn by CSS</h2>
+<div class="q" style="position:relative;margin:50px 0 0 70px;font:italic 400 40px/1.25 'DM Serif Display';max-width:800px">Decoration from ::before and ::after stays a picture, the words stay text.</div>
+<p style="margin-top:50px;font-size:34px">Underlined by <span class="u">a pseudo bar</span> below.</p></section>
+<section class="dark" style=""><p class="eyebrow" style="color:#7dd3fc">Rich text</p><h2>Inline formatting</h2>
+<p style="font-size:26px;max-width:900px">Water is H<sub>2</sub>O, area is m<sup>2</sup>, <u>underlined</u>, <s>struck</s>, <mark style="background:#fde047;color:#111;padding:0 4px">highlighted</mark>, a <a href="https://example.com" style="color:#7dd3fc">link</a> and <b>bold</b> <i>italic</i> <span style="text-transform:uppercase;letter-spacing:.08em">uppercased</span> words.</p></section>
+<section class="" style=""><p class="eyebrow">Layout</p><h2>A flex timeline</h2><div style="display:flex;align-items:flex-start;gap:0;margin-top:30px">
+<div style="flex:1;border-top:4px solid #2f5bea;padding-top:16px;padding-right:20px"><b style="font-size:26px">2023</b><p style="font-size:18px;color:var(--mute)">Started</p></div><div style="flex:1;border-top:4px solid #e8590c;padding-top:16px;padding-right:20px"><b style="font-size:26px">2024</b><p style="font-size:18px;color:var(--mute)">Launched</p></div><div style="flex:1;border-top:4px solid #12b886;padding-top:16px;padding-right:20px"><b style="font-size:26px">2025</b><p style="font-size:18px;color:var(--mute)">Scaled</p></div><div style="flex:1;border-top:4px solid #f59f00;padding-top:16px;padding-right:20px"><b style="font-size:26px">2026</b><p style="font-size:18px;color:var(--mute)">Open sourced</p></div></div></section>
+<script src="chart-draw.js"></script></body></html>
